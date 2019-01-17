@@ -4,7 +4,7 @@
 #
 Name     : rebootmgr
 Version  : 0.18
-Release  : 1
+Release  : 2
 URL      : https://github.com/SUSE/rebootmgr/releases/download/v0.18/rebootmgr-0.18.tar.xz
 Source0  : https://github.com/SUSE/rebootmgr/releases/download/v0.18/rebootmgr-0.18.tar.xz
 Summary  : No detailed summary available
@@ -12,9 +12,9 @@ Group    : Development/Tools
 License  : GPL-2.0 LGPL-2.1
 Requires: rebootmgr-bin = %{version}-%{release}
 Requires: rebootmgr-data = %{version}-%{release}
-Requires: rebootmgr-libexec = %{version}-%{release}
 Requires: rebootmgr-license = %{version}-%{release}
 Requires: rebootmgr-man = %{version}-%{release}
+Requires: rebootmgr-services = %{version}-%{release}
 BuildRequires : libxml2-dev
 BuildRequires : libxslt-bin
 BuildRequires : pkgconfig(dbus-glib-1)
@@ -28,9 +28,9 @@ No detailed description available
 Summary: bin components for the rebootmgr package.
 Group: Binaries
 Requires: rebootmgr-data = %{version}-%{release}
-Requires: rebootmgr-libexec = %{version}-%{release}
 Requires: rebootmgr-license = %{version}-%{release}
 Requires: rebootmgr-man = %{version}-%{release}
+Requires: rebootmgr-services = %{version}-%{release}
 
 %description bin
 bin components for the rebootmgr package.
@@ -42,15 +42,6 @@ Group: Data
 
 %description data
 data components for the rebootmgr package.
-
-
-%package libexec
-Summary: libexec components for the rebootmgr package.
-Group: Default
-Requires: rebootmgr-license = %{version}-%{release}
-
-%description libexec
-libexec components for the rebootmgr package.
 
 
 %package license
@@ -69,6 +60,14 @@ Group: Default
 man components for the rebootmgr package.
 
 
+%package services
+Summary: services components for the rebootmgr package.
+Group: Systemd services
+
+%description services
+services components for the rebootmgr package.
+
+
 %prep
 %setup -q -n rebootmgr-0.18
 
@@ -77,8 +76,8 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1547743599
-%configure --disable-static
+export SOURCE_DATE_EPOCH=1547744057
+%configure --disable-static --libexecdir=/usr/lib
 make  %{?_smp_mflags}
 
 %check
@@ -89,7 +88,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1547743599
+export SOURCE_DATE_EPOCH=1547744057
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/rebootmgr
 cp COPYING %{buildroot}/usr/share/package-licenses/rebootmgr/COPYING
@@ -109,10 +108,6 @@ cp COPYING.LIB %{buildroot}/usr/share/package-licenses/rebootmgr/COPYING.LIB
 /usr/share/dbus-1/interfaces/org.opensuse.RebootMgr.xml
 /usr/share/dbus-1/system.d/org.opensuse.RebootMgr.conf
 
-%files libexec
-%defattr(-,root,root,-)
-/usr/libexec/systemd/system/rebootmgr.service
-
 %files license
 %defattr(0644,root,root,0755)
 /usr/share/package-licenses/rebootmgr/COPYING
@@ -125,3 +120,7 @@ cp COPYING.LIB %{buildroot}/usr/share/package-licenses/rebootmgr/COPYING.LIB
 /usr/share/man/man8/org.opensuse.RebootMgr.conf.8
 /usr/share/man/man8/rebootmgr.service.8
 /usr/share/man/man8/rebootmgrd.8
+
+%files services
+%defattr(-,root,root,-)
+/usr/lib/systemd/system/rebootmgr.service
