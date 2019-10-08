@@ -1,0 +1,75 @@
+From 2237874ed8e2d3f958c0271b34cd49f627f5af10 Mon Sep 17 00:00:00 2001
+From: santoshkumar <santoshkumar.laxminarayan.rai@intel.com>
+Date: Tue, 8 Oct 2019 11:05:10 +0800
+Subject: [PATCH] Fixed build failure due to duplicate gettid().
+
+Taken the reference of commit and backported needed changes:
+https://github.com/SUSE/rebootmgr/commit/40b208cb522ab8b3f0bfab59b7daeab2dbdaa0d2
+
+Signed-off-by: santoshkumar <santoshkumar.laxminarayan.rai@intel.com>
+---
+ config.h.in   | 3 +++
+ configure.ac  | 4 +++-
+ src/log_msg.c | 3 +++
+ 3 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/config.h.in b/config.h.in
+index 16b125f..d3d3ec9 100644
+--- a/config.h.in
++++ b/config.h.in
+@@ -22,6 +22,9 @@
+ /* Define if the GNU gettext() function is already present or preinstalled. */
+ #undef HAVE_GETTEXT
+ 
++/* Define to 1 if gettid() is available */
++#undef HAVE_GETTID
++
+ /* Define if you have the iconv() function and it works. */
+ #undef HAVE_ICONV
+ 
+diff --git a/configure.ac b/configure.ac
+index 0d5659a..f21d5c0 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -56,6 +56,9 @@ AC_PROG_MAKE_SET
+ AC_PROG_RANLIB
+ AC_PROG_LN_S
+ 
++dnl Check for gettid wrapper
++AC_CHECK_FUNC(gettid, [AC_DEFINE(HAVE_GETTID, 1, [Define to 1 if gettid() is available])])
++
+ dnl Checks for typedefs, structures, and compiler characteristics.
+ AC_C_CONST
+ 
+@@ -93,7 +96,6 @@ JH_CHECK_XML_CATALOG([http://docbook.sourceforge.net/release/xsl/current/manpage
+ AM_CONDITIONAL(ENABLE_REGENERATE_MAN, test x$enable_man != xno)
+ 
+ dnl gettext support
+-AM_GNU_GETTEXT_VERSION
+ AM_GNU_GETTEXT([external])
+ AC_CHECK_FUNCS(dngettext)
+ 
+diff --git a/src/log_msg.c b/src/log_msg.c
+index 2c3b4a3..137206f 100644
+--- a/src/log_msg.c
++++ b/src/log_msg.c
+@@ -25,6 +25,8 @@
+ #include "log_msg.h"
+ 
+ #include <sys/syscall.h>
++
++#ifndef HAVE_GETTID
+ #ifdef __NR_gettid
+ static pid_t
+ gettid (void)
+@@ -38,6 +40,7 @@ gettid (void)
+     return getpid ();
+ }
+ #endif
++#endif /* ! HAVE_GETTID */
+ 
+ int debug_flag = 0;
+ int logfile_flag = 0;
+-- 
+2.23.0
+

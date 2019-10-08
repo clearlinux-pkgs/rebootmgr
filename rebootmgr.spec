@@ -4,7 +4,7 @@
 #
 Name     : rebootmgr
 Version  : 0.18
-Release  : 2
+Release  : 3
 URL      : https://github.com/SUSE/rebootmgr/releases/download/v0.18/rebootmgr-0.18.tar.xz
 Source0  : https://github.com/SUSE/rebootmgr/releases/download/v0.18/rebootmgr-0.18.tar.xz
 Summary  : No detailed summary available
@@ -15,11 +15,19 @@ Requires: rebootmgr-data = %{version}-%{release}
 Requires: rebootmgr-license = %{version}-%{release}
 Requires: rebootmgr-man = %{version}-%{release}
 Requires: rebootmgr-services = %{version}-%{release}
+BuildRequires : automake
+BuildRequires : automake-dev
+BuildRequires : gettext-bin
+BuildRequires : libtool
+BuildRequires : libtool-dev
 BuildRequires : libxml2-dev
 BuildRequires : libxslt-bin
+BuildRequires : m4
+BuildRequires : pkg-config-dev
 BuildRequires : pkgconfig(dbus-glib-1)
 BuildRequires : pkgconfig(glib-2.0)
 BuildRequires : pkgconfig(json-c)
+Patch1: gettid_check.patch
 
 %description
 No detailed description available
@@ -29,7 +37,6 @@ Summary: bin components for the rebootmgr package.
 Group: Binaries
 Requires: rebootmgr-data = %{version}-%{release}
 Requires: rebootmgr-license = %{version}-%{release}
-Requires: rebootmgr-man = %{version}-%{release}
 Requires: rebootmgr-services = %{version}-%{release}
 
 %description bin
@@ -70,25 +77,31 @@ services components for the rebootmgr package.
 
 %prep
 %setup -q -n rebootmgr-0.18
+%patch1 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1547744057
-%configure --disable-static --libexecdir=/usr/lib
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1570516919
+export GCC_IGNORE_WERROR=1
+export CFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$CFLAGS -fno-lto "
+export FFLAGS="$CFLAGS -fno-lto "
+export CXXFLAGS="$CXXFLAGS -fno-lto "
+%reconfigure --disable-static --libexecdir=/usr/lib
 make  %{?_smp_mflags}
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1547744057
+export SOURCE_DATE_EPOCH=1570516919
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/rebootmgr
 cp COPYING %{buildroot}/usr/share/package-licenses/rebootmgr/COPYING
