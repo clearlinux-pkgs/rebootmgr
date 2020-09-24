@@ -4,7 +4,7 @@
 #
 Name     : rebootmgr
 Version  : 0.20.1
-Release  : 4
+Release  : 5
 URL      : https://github.com/SUSE/rebootmgr/releases/download/v0.20.1/rebootmgr-0.20.1.tar.xz
 Source0  : https://github.com/SUSE/rebootmgr/releases/download/v0.20.1/rebootmgr-0.20.1.tar.xz
 Summary  : No detailed summary available
