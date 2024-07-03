@@ -1,6 +1,16 @@
 rebootmgr NEWS -- history of user-visible changes.
 
-Copyright (C) 2016-2023 Thorsten Kukuk
+Copyright (C) 2016-2024 Thorsten Kukuk
+
+Version 2.4
+* Make sure systemctl reboot will not switch to soft-reboot automatically
+
+Version 2.3
+* Add verbose option to rebootmgrd
+* Enable verbose option for rebootmgrd in service file
+
+Version 2.2
+* Add tmpfiles.d config to remove /run/reboot-needed after soft-reboot
 
 Version 2.1
 * Support systemctl soft-reboot (systemd >= v254)
