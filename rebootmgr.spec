@@ -7,7 +7,7 @@
 #
 Name     : rebootmgr
 Version  : 2.4
-Release  : 8
+Release  : 9
 URL      : https://github.com/SUSE/rebootmgr/releases/download/v2.4/rebootmgr-2.4.tar.xz
 Source0  : https://github.com/SUSE/rebootmgr/releases/download/v2.4/rebootmgr-2.4.tar.xz
 Summary  : No detailed summary available
